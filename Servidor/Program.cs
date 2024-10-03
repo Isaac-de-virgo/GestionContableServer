@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Servidor.Data;
+using Servidor.Interfaces;
+using Servidor.Services;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +36,11 @@ builder.Services.AddCors(options =>
                .AllowAnyHeader(); // Permitir cualquier cabecera
     });
 });
+
+// Conecta a tu servidor Redis en la dirección especificada
+var redis = ConnectionMultiplexer.Connect("xxx");
+builder.Services.AddSingleton<IConnectionMultiplexer>(redis);
+builder.Services.AddScoped<ICacheService, RedisCacheService>();
 
 var app = builder.Build();
 
